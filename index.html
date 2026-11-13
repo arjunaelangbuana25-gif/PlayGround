@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101513" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101513'/%3E%3Cpath d='M13 16h38v8H22v8h22v8H22v8h29v8H13z' fill='%23bec765'/%3E%3C/svg%3E" />
+  <title>IRON FRONT — Vehicle Command</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <main id="app">
+    <canvas id="world"></canvas>
+    <div class="grain"></div>
+    <section id="menu" class="menu-screen">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Iron Front home"><span class="brand-mark"><i></i><i></i><i></i></span><span>IRON<span class="brand-light">FRONT</span><small>VEHICLE COMMAND</small></span></a>
+        <div class="top-center"><span class="live-dot"></span> FIELD SIMULATION <b>·</b> OPERATION 07</div>
+        <div class="top-right"><span class="status-pill"><span class="status-dot"></span> SYSTEMS ONLINE</span><span class="version">V 2.4.1</span></div>
+      </header>
+      <div class="menu-layout">
+        <section class="selection-panel">
+          <div class="eyebrow"><span>01</span> MISSION CONFIGURATION</div>
+          <h1>CHOOSE YOUR<br><em>FRONTLINE.</em></h1>
+          <p class="intro">Select a vehicle and theater of operations.<br>Your deployment is standing by.</p>
+          <div class="section-label"><span>VEHICLE CLASS</span><span class="count" id="vehicle-count">21 AVAILABLE</span></div>
+          <div class="class-tabs" id="class-tabs" role="tablist" aria-label="Vehicle classes"></div>
+          <div class="vehicle-heading"><span>SELECT UNIT</span><span class="scroll-hint">SCROLL TO EXPLORE <b>↕</b></span></div>
+          <div id="vehicle-grid" class="vehicle-grid" aria-label="Available vehicles"></div>
+          <div class="selection-footer"><div class="selected-unit"><span class="unit-icon">✦</span><div><small>CURRENT UNIT</small><strong id="selected-name">M1A2 ABRAMS</strong></div></div><div class="crew"><small>CREW</small><strong id="selected-crew">04 <span>PERSONNEL</span></strong></div></div>
+        </section>
+        <section class="mission-panel">
+          <div class="panel-topline"><span><i class="tiny-crosshair">⌖</i> THEATER SELECT</span><span class="map-coord" id="map-coord">34° 12' N / 39° 48' E</span></div>
+          <div class="map-card">
+            <div class="map-visual" id="map-visual">
+              <div class="map-grid"></div><div class="map-contours"></div><div class="map-ornament">N</div><div class="map-pin"><span></span><i>DEPLOYMENT ZONE</i></div>
+              <div class="map-label map-label-a">SECTOR 04 <b>▰</b></div><div class="map-label map-label-b">HOSTILE TERRITORY</div>
+              <div class="map-visual-bottom"><span>TACTICAL SATELLITE FEED</span><span>LIVE <i></i></span></div>
+            </div>
+            <div class="map-info"><div><div class="map-index" id="map-index">THEATER 01 / 03</div><h2 id="map-name">DUSTLINE<br><em>DESERT</em></h2></div><p id="map-desc">An open expanse of sun-baked terrain. Long sightlines, hard cover, and shifting dunes.</p></div>
+            <div class="map-controls"><button id="prev-map" class="arrow-btn" aria-label="Previous map">←</button><div class="map-dots" id="map-dots"></div><button id="next-map" class="arrow-btn" aria-label="Next map">→</button><button id="map-select" class="map-select">CHANGE THEATER <span>↗</span></button></div>
+          </div>
+          <div class="mission-meta"><div><span class="meta-icon">◉</span><small>MISSION TYPE</small><strong>FREE ROAM / SKIRMISH</strong></div><div><span class="meta-icon">☼</span><small>CONDITIONS</small><strong id="weather">CLEAR · 31°C</strong></div><div><span class="meta-icon">◎</span><small>THREAT LEVEL</small><strong class="threat">ELEVATED</strong></div></div>
+          <div class="deploy-row"><div class="deploy-note"><span>›</span> ALL SYSTEMS CHECKED<br><small>READY FOR DEPLOYMENT</small></div><button id="play-button" class="play-button"><span class="play-icon">▶</span><span>DEPLOY UNIT<small>ENTER THE THEATER</small></span><b>↗</b></button></div>
+          <div class="keyboard-note"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>TO MOVE</span><kbd>SPACE</kbd><span>FIRE</span></div>
+        </section>
+      </div>
+      <footer class="menu-footer"><span>IRON FRONT <b>© 2025</b></span><span>SIMULATED COMBAT ENVIRONMENT <i>·</i> ALL SYSTEMS NOMINAL</span><span>CLASSIFIED <b>▰▰▰</b></span></footer>
+    </section>
+    <section id="game-ui" class="game-ui hidden" aria-live="polite">
+      <div class="game-top"><button class="back-button" id="back-button">← <span>RETURN TO BASE</span></button><div class="game-title"><span class="live-dot"></span> LIVE OPERATION <b>/</b> <span id="game-map-name">DUSTLINE DESERT</span></div><div class="mission-clock" id="mission-clock">00:00</div></div>
+      <div class="hud-left"><div class="hud-label">UNIT STATUS</div><div class="hud-unit"><span class="hud-emblem">✦</span><div><strong id="hud-vehicle">M1A2 ABRAMS</strong><small id="hud-class">MAIN BATTLE TANK</small></div></div><div class="health-row"><span>HULL INTEGRITY</span><b id="health-value">100%</b></div><div class="health-track"><i id="health-bar"></i></div><div class="speed-block"><span>SPEED</span><b><i id="speed-value">000</i><small> KM/H</small></b></div></div>
+      <div class="hud-right"><div class="compass"><span>N</span><i></i><b id="heading">000°</b></div><div class="radar"><div class="radar-sweep"></div><i class="radar-dot dot-one"></i><i class="radar-dot dot-two"></i><i class="radar-dot dot-three"></i><span>LOCAL RADAR</span></div></div>
+      <div class="target-toast" id="target-toast"><span>✦</span> TARGET NEUTRALIZED <b>+100</b></div>
+      <div class="reticle"><i></i><i></i><i></i><i></i><b></b></div>
+      <div class="game-bottom"><div class="objective"><small>OBJECTIVE</small><strong>Explore the theater <span id="target-count">· 5 targets remaining</span></strong></div><div class="controls-legend"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>MOVE</span><kbd>SPACE</kbd><span>FIRE</span><kbd>SHIFT</kbd><span>BOOST</span></div><button id="fire-button" class="fire-button">◎ <span>FIRE</span></button></div>
+      <div class="touch-controls"><div class="touch-pad"><button data-control="forward">▲</button><div><button data-control="left">◀</button><button data-control="back">▼</button><button data-control="right">▶</button></div></div><button class="touch-fire" id="touch-fire">◎<small>FIRE</small></button></div>
+      <div class="pause-overlay hidden" id="pause-overlay"><div class="pause-card"><span class="eyebrow">OPERATION PAUSED</span><h2>TAKE A<br><em>BREATHER.</em></h2><p>Your unit is safe. Resume when you're ready.</p><button id="resume-button" class="play-button">RESUME OPERATION <b>↗</b></button><button id="pause-base" class="pause-base">RETURN TO BASE</button></div></div>
+    </section>
+    <div class="loading-overlay hidden" id="loading-overlay"><div class="loading-mark"><span></span><span></span><span></span></div><p>DEPLOYING TO THEATER</p><small>ESTABLISHING SECURE LINK...</small></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
